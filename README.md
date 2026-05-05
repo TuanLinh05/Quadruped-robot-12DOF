@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 🐕 12-DOF Quadruped Robot: Sliding Mode Control (SMC) with ROS2 & Webots
 
 ![Webots](https://img.shields.io/badge/Webots-R2025a-blue)
