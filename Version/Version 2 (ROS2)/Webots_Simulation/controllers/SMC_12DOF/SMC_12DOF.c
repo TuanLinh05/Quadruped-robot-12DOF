@@ -3,7 +3,12 @@
 #include <webots/position_sensor.h>
 #include <stdio.h>
 #include <math.h>
-#include <winsock2.h> // Thêm thư viện mạng UDP
+#include <sys/socket.h>  // POSIX sockets
+#include <arpa/inet.h>   // inet_addr
+#include <unistd.h>      // close()
+#include <fcntl.h>       // fcntl() cho non-blocking
+#include <string.h>      // strlen, strncmp
+#include <stdlib.h>      // atoi
 #include "math_utils.h"
 
 #define TIME_STEP 1
@@ -55,27 +60,26 @@ int main(int argc, char **argv) {
     }
     
     // Khởi tạo hệ thống phát sóng UDP (Telemetry)
-    WSADATA wsaData;
-    WSAStartup(MAKEWORD(2,2), &wsaData);
-    SOCKET udp_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    int udp_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     struct sockaddr_in dest;
     dest.sin_family = AF_INET;
     dest.sin_port = htons(5555);
     dest.sin_addr.s_addr = inet_addr("127.0.0.1");
 
     // Khởi tạo hệ thống nhận UDP (Nhận lệnh từ ROS2)
-    SOCKET udp_recv_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    int udp_recv_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     struct sockaddr_in recv_addr;
+    memset(&recv_addr, 0, sizeof(recv_addr));
     recv_addr.sin_family = AF_INET;
     recv_addr.sin_port = htons(5556);
     recv_addr.sin_addr.s_addr = INADDR_ANY;
-    if (bind(udp_recv_sock, (struct sockaddr *)&recv_addr, sizeof(recv_addr)) == SOCKET_ERROR) {
-        printf("LỖI: BIND PORT 5556 THẤT BẠI! Lỗi: %d\n", WSAGetLastError());
+    if (bind(udp_recv_sock, (struct sockaddr *)&recv_addr, sizeof(recv_addr)) < 0) {
+        perror("LỖI: BIND PORT 5556 THẤT BẠI");
     }
 
     // Cài đặt Non-blocking socket để không làm dừng vòng lặp Webots
-    u_long non_blocking = 1;
-    ioctlsocket(udp_recv_sock, FIONBIO, &non_blocking);
+    int flags = fcntl(udp_recv_sock, F_GETFL, 0);
+    fcntl(udp_recv_sock, F_SETFL, flags | O_NONBLOCK);
 
     double q_old[12] = {0}, qd_old[12] = {0}, dqd_old[12] = {0};
     printf("--- HE THONG DIEU KHIEN SMC CHO ROBOT 12-DOF: ĐÃ KẾT NỐI UDP ROS2 ---\n");
@@ -296,9 +300,8 @@ int main(int argc, char **argv) {
             wb_motor_set_torque(motors[idx_knee], tau2);
         }
     }
-    closesocket(udp_recv_sock);
-    closesocket(udp_sock);
-    WSACleanup();
+    close(udp_recv_sock);
+    close(udp_sock);
     wb_robot_cleanup();
     return 0;
 }
