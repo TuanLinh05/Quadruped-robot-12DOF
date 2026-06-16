@@ -1,0 +1,38 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    yaw_position_controller:
+      type: forward_command_controller/ForwardCommandController
+
+    leg_effort_controller:
+      type: forward_command_controller/ForwardCommandController
+
+
+yaw_position_controller:
+  ros__parameters:
+    joints:
+      - FL_hip_yaw
+      - FR_hip_yaw
+      - RL_hip_yaw
+      - RR_hip_yaw
+
+    interface_name: position
+
+
+leg_effort_controller:
+  ros__parameters:
+    joints:
+      - FL_hip_pitch
+      - FL_knee_pitch
+      - FR_hip_pitch
+      - FR_knee_pitch
+      - RL_hip_pitch
+      - RL_knee_pitch
+      - RR_hip_pitch
+      - RR_knee_pitch
+
+    interface_name: effort
