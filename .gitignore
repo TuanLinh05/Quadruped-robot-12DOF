@@ -1,0 +1,22 @@
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# ---- ROS 2 / colcon ----
+build/
+install/
+log/
+
+# ---- Python ----
+__pycache__/
+*.pyc
+
+# ---- Webots / MATLAB ----
+controllers/**/build/
+*.exe
+.*.wbproj
+Webots_Simulation/controllers/SMC_12DOF/SMC_12DOF
+*.asv
