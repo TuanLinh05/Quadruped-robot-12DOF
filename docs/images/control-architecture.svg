@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="700" viewBox="0 0 1280 700" role="img" aria-labelledby="title description">
+  <title id="title">Quadruped robot control architecture</title>
+  <desc id="description">Two separate implementations. Route A sends ROS 2 Twist commands through ros2_udp_bridge.py as MODE messages on UDP port 5556 to the Webots SMC_12DOF C controller, which advances in one millisecond simulation steps. It controls yaw by position and pitch and knee by sliding mode torque. At about 50 hertz of simulation time, it sends joint tracking, sliding variables and torque to the MATLAB SMC dashboard on UDP port 5555, and planned foot XZ trajectories to the realtime dashboard on UDP port 5557. Route B in ros2_ws feeds cmd_vel and joint_states into quadruped_main on a 50 hertz ROS timer. It sends position commands to yaw_position_controller and PD effort plus support torque to leg_effort_controller, through webots_ros2_control to Webots. It publishes smc_debug diagnostics.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#0f766e"/></marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172c43; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 18px; fill: #52677e; }
+      .route { font-size: 21px; font-weight: 700; }
+      .box { fill: #ffffff; stroke: #bdcdd9; stroke-width: 1.6; }
+      .primary { fill: #e8f6f3; stroke: #3b9b8d; stroke-width: 1.6; }
+      .name { font-size: 21px; font-weight: 700; }
+      .code { font-family: Consolas, 'Courier New', monospace; font-size: 18px; font-weight: 600; }
+      .small { font-size: 17px; fill: #52677e; }
+      .flow { fill: none; stroke: #0f766e; stroke-width: 2.3; marker-end: url(#arrow); }
+      .line { fill: none; stroke: #0f766e; stroke-width: 2.3; }
+    </style>
+  </defs>
+  <rect width="1280" height="700" rx="20" fill="#f6f9fc"/>
+  <text x="32" y="45" class="title">From commands to twelve joints</text>
+  <text x="32" y="75" class="subtitle">Two control routes in this repository</text>
+
+  <rect x="32" y="97" width="1216" height="299" rx="16" fill="#eef5f7" stroke="#d7e3eb"/>
+  <circle cx="59" cy="126" r="14" fill="#0f766e"/>
+  <text x="59" y="132" font-size="17" font-weight="700" text-anchor="middle" style="fill:#ffffff">A</text>
+  <text x="84" y="133" class="route">C controller + UDP</text>
+  <text x="1219" y="132" class="small" text-anchor="end">quadruped_ros2</text>
+
+  <rect x="48" y="157" width="160" height="90" rx="10" class="box"/>
+  <text x="128" y="193" class="code" text-anchor="middle">/cmd_vel</text>
+  <text x="128" y="220" class="small" text-anchor="middle">ROS 2 Twist</text>
+
+  <path d="M208 202H248" class="flow"/>
+  <rect x="254" y="157" width="255" height="90" rx="10" class="box"/>
+  <text x="381.5" y="192" class="code" text-anchor="middle">ros2_udp_bridge.py</text>
+  <text x="381.5" y="220" class="small" text-anchor="middle">UDP 5556 · MODE:n</text>
+
+  <path d="M509 202H549" class="flow"/>
+  <rect x="555" y="157" width="290" height="90" rx="10" class="primary"/>
+  <text x="700" y="191" class="code" text-anchor="middle">SMC_12DOF (C)</text>
+  <text x="700" y="220" class="small" text-anchor="middle">Webots · 1 ms simulation step</text>
+
+  <path d="M845 202H885" class="flow"/>
+  <rect x="891" y="157" width="341" height="90" rx="10" class="box"/>
+  <text x="1061.5" y="192" class="name" text-anchor="middle">Joint actuation</text>
+  <text x="1061.5" y="220" class="small" text-anchor="middle">Yaw: position · Pitch / knee: SMC torque</text>
+
+  <text x="53" y="290" class="name">MATLAB telemetry</text>
+  <text x="53" y="319" class="small">~50 Hz in simulation time</text>
+  <text x="53" y="346" class="small">Measured joints + planned foot targets</text>
+
+  <path d="M700 247V280H1060" class="line"/>
+  <path d="M700 280V303" class="flow"/>
+  <path d="M1060 280V303" class="flow"/>
+  <rect x="555" y="309" width="290" height="68" rx="10" class="box"/>
+  <text x="700" y="334" class="code" text-anchor="middle">smc_dashboard.m</text>
+  <text x="700" y="359" class="small" text-anchor="middle">UDP 5555 · tracking, s, torque</text>
+  <rect x="891" y="309" width="341" height="68" rx="10" class="box"/>
+  <text x="1061.5" y="334" class="code" text-anchor="middle">realtime_dashboard.m</text>
+  <text x="1061.5" y="359" class="small" text-anchor="middle">UDP 5557 · planned foot XZ</text>
+
+  <rect x="32" y="420" width="1216" height="248" rx="16" fill="#eef5f7" stroke="#d7e3eb"/>
+  <circle cx="59" cy="449" r="14" fill="#0f766e"/>
+  <text x="59" y="455" font-size="17" font-weight="700" text-anchor="middle" style="fill:#ffffff">B</text>
+  <text x="84" y="456" class="route">ROS 2 controller interfaces</text>
+  <text x="1219" y="455" class="small" text-anchor="end">ros2_ws</text>
+
+  <rect x="48" y="486" width="222" height="103" rx="10" class="box"/>
+  <text x="159" y="520" class="code" text-anchor="middle">/cmd_vel</text>
+  <text x="159" y="551" class="code" text-anchor="middle">/joint_states</text>
+  <text x="159" y="575" class="small" text-anchor="middle">Commands + joint feedback</text>
+
+  <path d="M270 533H307" class="flow"/>
+  <rect x="313" y="486" width="250" height="103" rx="10" class="primary"/>
+  <text x="438" y="526" class="code" text-anchor="middle">quadruped_main</text>
+  <text x="438" y="557" class="small" text-anchor="middle">50 Hz ROS timer</text>
+  <path d="M563 533H584V495H603" class="flow"/>
+  <path d="M584 533V575H603" class="flow"/>
+
+  <rect x="609" y="473" width="306" height="53" rx="10" class="box"/>
+  <text x="762" y="495" class="code" text-anchor="middle">yaw_position_controller</text>
+  <text x="762" y="517" class="small" text-anchor="middle">Position</text>
+  <rect x="609" y="541" width="306" height="68" rx="10" class="box"/>
+  <text x="762" y="567" class="code" text-anchor="middle">leg_effort_controller</text>
+  <text x="762" y="592" class="small" text-anchor="middle">PD effort + support torque</text>
+
+  <path d="M915 500H939V537H962" class="flow"/>
+  <path d="M915 575H939V537" class="line"/>
+  <rect x="968" y="486" width="264" height="103" rx="10" class="box"/>
+  <text x="1100" y="519" class="name" text-anchor="middle">Webots</text>
+  <text x="1100" y="550" class="small" text-anchor="middle">via</text>
+  <text x="1100" y="574" class="code" text-anchor="middle">webots_ros2_control</text>
+
+  <path d="M438 589V607" class="flow" stroke-dasharray="4 4"/>
+  <rect x="313" y="613" width="250" height="36" rx="8" class="box"/>
+  <text x="438" y="637" class="small" text-anchor="middle">/smc_debug · diagnostics</text>
+</svg>

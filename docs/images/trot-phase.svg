@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="460" viewBox="0 0 1280 460" role="img" aria-labelledby="title description">
+  <title id="title">Planned trot phase schedule for the C controller</title>
+  <desc id="description">One one-second cycle of the SMC_12DOF mode 4 Bezier trot. Front left and rear right have phase offset zero; front right and rear left have phase offset one half. The time and Bezier parameter duty factors are both 0.60. Front left and rear right are in planned stance from 0.2 to 0.8 seconds and swing during the rest of the cycle. Front right and rear left are in planned stance from 0 to 0.3 seconds and 0.7 to 1 second, with swing from 0.3 to 0.7 seconds. This schematic shows the planner schedule, not contact sensor measurements.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172c43; }
+      .title { font-size: 30px; font-weight: 700; }
+      .sub { font-size: 18px; fill: #52677e; }
+      .axis { font-size: 17px; fill: #52677e; }
+      .leg { font-size: 21px; font-weight: 700; }
+      .phase { font-size: 17px; fill: #52677e; }
+      .stance { fill: #0f766e; }
+      .swing { fill: #e3eaf2; }
+      .stanceLabel { font-size: 18px; fill: #ffffff; font-weight: 600; }
+      .swingLabel { font-size: 18px; fill: #52677e; }
+      .grid { stroke: #d0dce6; stroke-width: 1; }
+    </style>
+  </defs>
+  <rect width="1280" height="460" rx="20" fill="#f6f9fc"/>
+  <text x="32" y="44" class="title">Diagonal pairs, half a cycle apart</text>
+  <text x="32" y="76" class="sub">C controller · Mode 4 Bézier trot · T = 1 s · βₜ = βᵤ = 0.60</text>
+  <rect x="981" y="42" width="20" height="17" rx="3" class="stance"/>
+  <text x="1010" y="57" class="sub">Stance</text>
+  <rect x="1113" y="42" width="20" height="17" rx="3" class="swing"/>
+  <text x="1142" y="57" class="sub">Swing</text>
+
+  <text x="48" y="122" class="axis">Leg</text>
+  <text x="159" y="122" class="axis">Phase offset</text>
+  <text x="1219" y="105" class="axis" text-anchor="end">Time within cycle (s)</text>
+  <g class="axis" text-anchor="middle">
+    <text x="288" y="130">0.0</text><text x="379" y="130">0.1</text>
+    <text x="470" y="130">0.2</text><text x="561" y="130">0.3</text>
+    <text x="652" y="130">0.4</text><text x="743" y="130">0.5</text>
+    <text x="834" y="130">0.6</text><text x="925" y="130">0.7</text>
+    <text x="1016" y="130">0.8</text><text x="1107" y="130">0.9</text>
+    <text x="1198" y="130">1.0</text>
+  </g>
+  <g class="grid">
+    <path d="M288 142V377M379 142V377M470 142V377M561 142V377M652 142V377M743 142V377M834 142V377M925 142V377M1016 142V377M1107 142V377M1198 142V377"/>
+  </g>
+
+  <text x="48" y="181" class="leg">FL</text><text x="88" y="181" class="phase">Front left</text><text x="225" y="181" class="phase" text-anchor="middle">0.0</text>
+  <rect x="288" y="155" width="182" height="40" class="swing"/><rect x="470" y="155" width="546" height="40" class="stance"/><rect x="1016" y="155" width="182" height="40" class="swing"/>
+  <text x="379" y="181" class="swingLabel" text-anchor="middle">Swing</text><text x="743" y="181" class="stanceLabel" text-anchor="middle">Stance · 0.6 s</text><text x="1107" y="181" class="swingLabel" text-anchor="middle">Swing</text>
+
+  <text x="48" y="238" class="leg">RR</text><text x="88" y="238" class="phase">Rear right</text><text x="225" y="238" class="phase" text-anchor="middle">0.0</text>
+  <rect x="288" y="212" width="182" height="40" class="swing"/><rect x="470" y="212" width="546" height="40" class="stance"/><rect x="1016" y="212" width="182" height="40" class="swing"/>
+  <text x="379" y="238" class="swingLabel" text-anchor="middle">Swing</text><text x="743" y="238" class="stanceLabel" text-anchor="middle">Stance · 0.6 s</text><text x="1107" y="238" class="swingLabel" text-anchor="middle">Swing</text>
+
+  <text x="48" y="295" class="leg">FR</text><text x="88" y="295" class="phase">Front right</text><text x="225" y="295" class="phase" text-anchor="middle">0.5</text>
+  <rect x="288" y="269" width="273" height="40" class="stance"/><rect x="561" y="269" width="364" height="40" class="swing"/><rect x="925" y="269" width="273" height="40" class="stance"/>
+  <text x="424.5" y="295" class="stanceLabel" text-anchor="middle">Stance</text><text x="743" y="295" class="swingLabel" text-anchor="middle">Swing · 0.4 s</text><text x="1061.5" y="295" class="stanceLabel" text-anchor="middle">Stance</text>
+
+  <text x="48" y="352" class="leg">RL</text><text x="88" y="352" class="phase">Rear left</text><text x="225" y="352" class="phase" text-anchor="middle">0.5</text>
+  <rect x="288" y="326" width="273" height="40" class="stance"/><rect x="561" y="326" width="364" height="40" class="swing"/><rect x="925" y="326" width="273" height="40" class="stance"/>
+  <text x="424.5" y="352" class="stanceLabel" text-anchor="middle">Stance</text><text x="743" y="352" class="swingLabel" text-anchor="middle">Swing · 0.4 s</text><text x="1061.5" y="352" class="stanceLabel" text-anchor="middle">Stance</text>
+
+  <text x="32" y="416" class="sub">Planner schedule: ξ = (t / T + phase offset) mod 1; stance when ξ ∈ [0.2, 0.8].</text>
+  <text x="32" y="442" class="sub">Stance / swing labels are generated by the gait planner, not measured by contact sensors.</text>
+</svg>
