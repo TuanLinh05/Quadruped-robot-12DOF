@@ -41,8 +41,8 @@ The C implementation uses two-link inverse kinematics and per-leg Euler–Lagran
 
 | Workflow | Folder | Control law | Best starting point |
 |---|---|---|---|
-| **A — C + UDP** | `quadruped_ros2/` | SMC torque control for pitch/knee, position control for yaw | Explore the implemented SMC controller, all ten presets, and MATLAB dashboards |
-| **B — Native ROS 2** | `ros2_ws/` | PD effort control with support torque, position control for yaw | Explore ROS 2 feedback, controller topics, and modular Python code |
+| **A - C + UDP** | `quadruped_ros2/` | SMC torque control for pitch/knee, position control for yaw | Explore the implemented SMC controller, all ten presets, and MATLAB dashboards |
+| **B - Native ROS 2** | `ros2_ws/` | PD effort control with support torque, position control for yaw | Explore ROS 2 feedback, controller topics, and modular Python code |
 
 The native ROS 2 package currently computes the sliding surface for diagnostics; its effort commands use **PD control**, rather than the C controller's SMC torque law. The two workflows use separate world files and should be launched individually.
 
@@ -87,7 +87,7 @@ Quadruped-robot-12DOF/
 
 <a id="quick-start"></a>
 
-## Quick start — C + UDP
+## Quick start - C + UDP
 
 ### 1. Prepare the environment
 
@@ -124,7 +124,7 @@ quadruped_ros2/Webots_Simulation/worlds/quad_3dof_L1L2L3_4legs.wbt
 
 Select the `SMC_12DOF` controller in Webots' editor, build it, then press **Play**. The world selects this controller automatically.
 
-> **Startup behavior:** the C controller starts in **Mode 4 — Trot**. To switch to Stand without ROS 2, send this command while the simulation is running:
+> **Startup behavior:** the C controller starts in **Mode 4 - Trot**. To switch to Stand without ROS 2, send this command while the simulation is running:
 
 ```bash
 python3 -c "import socket; socket.socket(socket.AF_INET, socket.SOCK_DGRAM).sendto(b'MODE:1', ('127.0.0.1', 5556))"
@@ -148,7 +148,7 @@ In another terminal:
 ```bash
 source /opt/ros/humble/setup.bash
 
-# Trot — Mode 4
+# Trot - Mode 4
 ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \
   "{linear: {x: 0.5}}"
 ```
@@ -156,11 +156,11 @@ ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \
 Stop that publisher with `Ctrl+C` before trying another command:
 
 ```bash
-# Lateral Trot / Crab Walk — Mode 8
+# Lateral Trot / Crab Walk - Mode 8
 ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \
   "{linear: {y: 0.5}}"
 
-# Spin in Place — Mode 9
+# Spin in Place - Mode 9
 ros2 topic pub --rate 10 /cmd_vel geometry_msgs/msg/Twist \
   "{angular: {z: 0.5}}"
 ```
@@ -178,10 +178,10 @@ The C/UDP workflow retains the last received mode. **`Ctrl+C` alone does not sto
 
 | Condition, checked in this order | Selected mode |
 |---|---|
-| `abs(linear.x) > 0.05` | 4 — Trot |
-| Otherwise, `abs(linear.y) > 0.05` | 8 — Lateral Trot |
-| Otherwise, `abs(angular.z) > 0.05` | 9 — Spin |
-| Otherwise | 1 — Stand |
+| `abs(linear.x) > 0.05` | 4 - Trot |
+| Otherwise, `abs(linear.y) > 0.05` | 8 - Lateral Trot |
+| Otherwise, `abs(angular.z) > 0.05` | 9 - Spin |
+| Otherwise | 1 - Stand |
 
 These values **select a preset**. Their magnitude and sign are not forwarded as speed or direction setpoints; combined Twist inputs are resolved using the priority above.
 
@@ -255,10 +255,10 @@ Implementation: [`SMC_12DOF.c`](quadruped_ros2/Webots_Simulation/controllers/SMC
 With workflow A running, execute one of these commands in MATLAB from the repository root:
 
 ```matlab
-% Desired/actual joint angles, error terms, and commanded torque — UDP 5555
+% Desired/actual joint angles, error terms, and commanded torque - UDP 5555
 run('quadruped_ros2/MATLAB_Scripts/smc_dashboard.m')
 
-% Planned XZ trajectories for all four feet — UDP 5557
+% Planned XZ trajectories for all four feet - UDP 5557
 run('quadruped_ros2/MATLAB_Scripts/realtime_dashboard.m')
 ```
 
@@ -278,7 +278,7 @@ Yaw uses position control, so its torque field is a zero placeholder. The trajec
 
 <a id="native-ros2"></a>
 
-## Native ROS 2 package — experimental workflow
+## Native ROS 2 package - experimental workflow
 
 This route uses the world under `ros2_ws`, an external Webots controller, and ROS 2 control interfaces. It does not use the standalone UDP bridge or its MATLAB telemetry stream.
 
@@ -387,8 +387,8 @@ Luồng chính sử dụng controller **C với Sliding Mode Control theo mô-me
 
 | Luồng | Thư mục | Nội dung |
 |---|---|---|
-| **A — C + UDP** | `quadruped_ros2/` | SMC, 10 chế độ chuyển động, hai dashboard MATLAB |
-| **B — ROS 2 native** | `ros2_ws/` | Điều khiển qua `webots_ros2_control`, PD mô-men và dữ liệu phản hồi ROS 2 |
+| **A - C + UDP** | `quadruped_ros2/` | SMC, 10 chế độ chuyển động, hai dashboard MATLAB |
+| **B - ROS 2 native** | `ros2_ws/` | Điều khiển qua `webots_ros2_control`, PD mô-men và dữ liệu phản hồi ROS 2 |
 
 Package ROS 2 native hiện tính mặt trượt để theo dõi; lệnh mô-men vẫn dùng **PD kết hợp mô-men hỗ trợ**. Chạy từng luồng với world tương ứng.
 
@@ -407,7 +407,7 @@ Môi trường sử dụng: **Ubuntu 22.04, Webots R2025a, trình biên dịch C
    quadruped_ros2/Webots_Simulation/worlds/quad_3dof_L1L2L3_4legs.wbt
    ```
 
-2. Build controller `SMC_12DOF` trong Webots rồi nhấn **Play**. Controller mặc định khởi động ở **Trot — Mode 4**. Muốn chuyển về Stand ngay, gửi:
+2. Build controller `SMC_12DOF` trong Webots rồi nhấn **Play**. Controller mặc định khởi động ở **Trot - Mode 4**. Muốn chuyển về Stand ngay, gửi:
 
    ```bash
    python3 -c "import socket; socket.socket(socket.AF_INET, socket.SOCK_DGRAM).sendto(b'MODE:1', ('127.0.0.1', 5556))"
@@ -428,7 +428,7 @@ Môi trường sử dụng: **Ubuntu 22.04, Webots R2025a, trình biên dịch C
      "{linear: {x: 0.5}}"
    ```
 
-   Dùng `linear.y: 0.5` để chọn **Mode 8 — Lateral Trot**, hoặc `angular.z: 0.5` để chọn **Mode 9 — Spin**. Dừng publisher trước khi gửi một lệnh khác.
+   Dùng `linear.y: 0.5` để chọn **Mode 8 - Lateral Trot**, hoặc `angular.z: 0.5` để chọn **Mode 9 - Spin**. Dừng publisher trước khi gửi một lệnh khác.
 
 5. **Để chuyển về Stand**, dừng publisher bằng `Ctrl+C`, giữ bridge đang chạy rồi gửi:
 
